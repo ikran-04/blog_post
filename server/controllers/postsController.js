@@ -4,13 +4,14 @@ const prisma = new PrismaClient();
 export const createPost = async (req, res) => {
   try {
     const { authorId, content } = req.body;
-
-    // Use Prisma to create a new post
+    const image = req.file;
+    console.log(image);
     const newPost = await prisma.post.create({
       data: {
         content: content,
+        images: image.filename,
         author: {
-          connect: { id: authorId }, // Connect the post to the author by their ID
+          connect: { id: parseInt(authorId) },
         },
       },
     });
@@ -25,11 +26,6 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    // const allPosts = await prisma.post.findMany({
-    //   orderBy: { createdAt: "desc" },
-    // });
-    // res.status(200).json(allPosts);
-
     const allPosts = await prisma.post.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -41,16 +37,16 @@ export const getAllPosts = async (req, res) => {
       },
     });
 
-    // Extract relevant information for response
     const postsWithUserInfo = allPosts.map((post) => ({
       id: post.id,
       content: post.content,
       createdAt: post.createdAt,
+      images: post.images,
       author: {
         id: post.author.id,
         username: post.author.username,
       },
-      likes: post.likes, // Include likes if needed
+      likes: post.likes,
     }));
 
     res.status(200).json(postsWithUserInfo);

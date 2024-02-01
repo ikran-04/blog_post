@@ -24,10 +24,12 @@ model User {
 model Post {
   id        Int      @id @default(autoincrement())
   content   String
+  images    String
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id], map: "post_author")
   authorId  Int
   likes     Like[]
+
 }
 
 // Define the Like model
