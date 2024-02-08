@@ -55,3 +55,39 @@ export const getAllPosts = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+export const likePost = async (req, res) => {
+  const { userId, postId } = req.body;
+
+  try {
+    const like = await prisma.like.create({
+      data: {
+        userId,
+        postId,
+      },
+    });
+
+    res.json(like);
+  } catch (error) {
+    console.error("Error liking post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const unlikePost = async (req, res) => {
+  const { userId, postId } = req.params;
+
+  try {
+    await prisma.like.deleteMany({
+      where: {
+        userId: parseInt(userId, 10),
+        postId: parseInt(postId, 10),
+      },
+    });
+
+    res.json({ message: "Successfully unliked the post." });
+  } catch (error) {
+    console.error("Error unliking post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
