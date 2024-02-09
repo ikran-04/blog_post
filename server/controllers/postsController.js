@@ -91,3 +91,38 @@ export const unlikePost = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const countLikes = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const likeCount = await prisma.like.count({
+      where: {
+        postId: parseInt(postId, 10),
+      },
+    });
+
+    res.json({ count: likeCount });
+  } catch (error) {
+    console.error("Error counting likes:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const checkIfLiked = async (req, res) => {
+  const { userId, postId } = req.params;
+
+  try {
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        userId: parseInt(userId, 10),
+        postId: parseInt(postId, 10),
+      },
+    });
+
+    res.json({ hasLiked: !!existingLike });
+  } catch (error) {
+    console.error("Error checking like:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

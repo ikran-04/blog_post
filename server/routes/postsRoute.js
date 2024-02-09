@@ -14,10 +14,22 @@ const upload = multer({ storage: storage });
 
 const router = express.Router();
 
-import { createPost, getAllPosts } from "../controllers/postsController.js";
+import {
+  checkIfLiked,
+  countLikes,
+  createPost,
+  getAllPosts,
+  likePost,
+  unlikePost,
+} from "../controllers/postsController.js";
 
 router.post("/post", upload.single("image"), createPost);
 router.get("/posts", getAllPosts);
+router.post("/like", likePost);
+router.delete("/unlike", unlikePost);
+router.post("/unlike", unlikePost);
+router.get("/count/:postId", countLikes);
+router.get("/check/:userId/:postId", checkIfLiked);
 // router.get("/users", getUsers);
 
 export default router;
