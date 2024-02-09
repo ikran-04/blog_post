@@ -26,8 +26,7 @@ import {
 router.post("/post", upload.single("image"), createPost);
 router.get("/posts", getAllPosts);
 router.post("/like", likePost);
-router.delete("/unlike", unlikePost);
-router.post("/unlike", unlikePost);
+router.delete("/unlike/:userId/:postId", unlikePost);
 router.get("/count/:postId", countLikes);
 router.get("/check/:userId/:postId", checkIfLiked);
 // router.get("/users", getUsers);
