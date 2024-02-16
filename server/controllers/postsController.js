@@ -126,3 +126,60 @@ export const checkIfLiked = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const comment = async (req, res) => {
+  try {
+    const { content, authorId, postId } = req.body;
+
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        authorId,
+        postId,
+      },
+    });
+
+    res.json(comment);
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const updateComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+
+    const updatedComment = await prisma.comment.update({
+      where: {
+        id: parseInt(id, 10),
+      },
+      data: {
+        content,
+      },
+    });
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.comment.delete({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+
+    res.json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
