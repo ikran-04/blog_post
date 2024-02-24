@@ -42,17 +42,17 @@ export const login = async (req, res) => {
       where: { email },
     });
 
-    if (!user) {
-      res.status(401).json({ message: "Invalid email or password" });
-      return;
-    }
+    if (!user)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-    if (!isPasswordValid) {
-      res.send("Invalid email or password");
-      return;
-    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ token });
 
     // Successful login:
     console.log("Login successful!");
