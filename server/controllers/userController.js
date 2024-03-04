@@ -27,8 +27,11 @@ export const signup = async (req, res) => {
       },
     });
 
-    console.log(`User created with id: ${createdUser.id}`);
-    res.json(createdUser);
+    const token = Jwt.sign({ id: createdUser.id }, process.env.SECRETKEY, {
+      expiresIn: "1h",
+    });
+
+    res.header("Authorization", token).send(token);
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ message: "Internal server error" });
