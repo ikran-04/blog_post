@@ -68,6 +68,7 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return res.status(400).send("User not found");
 
@@ -76,10 +77,7 @@ export const login = async (req, res) => {
 
   const token = Jwt.sign(
     { id: user.id, email: user.email },
-    process.env.SECRETKEY,
-    {
-      expiresIn: "1h",
-    }
+    process.env.SECRETKEY
   );
   console.log(token);
   res.header("Authorization", token).send(token);
